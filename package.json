@@ -1,0 +1,11 @@
+{
+  "name": "comfyui-market-backend",
+  "version": "1.0.0",
+  "description": "Serverless functions for file upload and auth",
+  "main": "index.js",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "busboy": "^1.6.0",
+    "cookie": "^0.6.0"
+  }
+}
