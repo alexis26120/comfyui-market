@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.bak
+*.lock
+*.secret
+.env
+dist/
+dist-ssr/
+*.local

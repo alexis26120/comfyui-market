@@ -11,6 +11,11 @@ exports.handler = async (event, context) => {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
+    // Helper to generate a random slug
+    const generateSlug = () => {
+        return Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 6);
+    };
+
     return new Promise((resolve, reject) => {
         const busboy = Busboy({ headers: event.headers });
         const fields = {};
@@ -43,8 +48,12 @@ exports.handler = async (event, context) => {
                 }
 
                 // 1. Upload to Supabase Storage
+                // Use a cleaner path structure: uploads/{slug}/{filename}
+                const slug = generateSlug();
                 const fileExt = fileName.split('.').pop();
-                const uniquePath = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+                // Sanitize filename
+                const safeFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+                const uniquePath = `${slug}/${safeFileName}`;
 
                 const { data: uploadData, error: uploadError } = await supabase
                     .storage
@@ -54,46 +63,78 @@ exports.handler = async (event, context) => {
                         upsert: false
                     });
 
-                if (uploadError) throw uploadError;
+                if (uploadError) {
+                    console.error('Supabase Storage Error:', uploadError);
+                    throw new Error('Storage upload failed: ' + uploadError.message);
+                }
+
+                if (!uploadData || !uploadData.path) {
+                    console.error('Supabase Storage Error: Missing path in response', uploadData);
+                    throw new Error('Storage upload succeeded but returned no path.');
+                }
+
+                const storagePath = uploadData.path;
 
                 // 2. Insert into Supabase DB
+                const publicPrice = parseFloat(fields.price || 0);
+
                 const { data: dbData, error: dbError } = await supabase
                     .from('products')
                     .insert([
                         {
-                            filename: uniquePath,
+                            filename: storagePath, // Storing the path in storage
+                            file_path: storagePath, // Required by DB schema
                             original_name: fileName,
-                            price: parseFloat(fields.price || 0),
-                            file_path: uploadData.path,
-                            description: 'Uploaded via Netlify'
+                            price: publicPrice,
+                            slug: slug,
+                            description: 'Uploaded via Netlify',
+                            is_paid: false
                         }
                     ])
-                    .select();
+                    .select()
+                    .single();
 
-                if (dbError) throw dbError;
+                if (dbError) {
+                    console.error('Supabase DB Error:', dbError);
+                    throw new Error('Database insert failed: ' + dbError.message);
+                }
 
-                // 3. Generate Link (Simulated Payment Link for now)
-                const paymentLink = `https://${event.headers.host}/pay?id=${dbData[0].id}`;
+                // 3. Generate the new simplified link
+                // host header might include port in dev, which is fine.
+                const protocol = event.headers['x-forwarded-proto'] || 'https';
+                const host = event.headers.host;
+                const shareLink = `${protocol}://${host}/l/${slug}`;
 
                 resolve({
                     statusCode: 200,
                     body: JSON.stringify({
                         success: true,
-                        link: paymentLink,
-                        product: dbData[0]
+                        link: shareLink,
+                        slug: slug,
+                        product: dbData
                     })
                 });
 
             } catch (error) {
-                console.error('Upload Error:', error);
+                console.error('Upload Handler Error:', error);
                 resolve({
                     statusCode: 500,
-                    body: JSON.stringify({ success: false, message: error.message })
+                    body: JSON.stringify({ success: false, message: error.message || 'Internal Server Error' })
                 });
             }
         });
 
-        busboy.write(Buffer.from(event.body, 'base64'));
+        busboy.on('error', (error) => {
+            console.error('Busboy Error:', error);
+            resolve({ statusCode: 500, body: JSON.stringify({ success: false, message: 'Upload parsing failed' }) });
+        });
+
+        // Handle body parsing based on encoding
+        if (event.isBase64Encoded) {
+            busboy.write(Buffer.from(event.body, 'base64'));
+        } else {
+            busboy.write(event.body);
+        }
         busboy.end();
     });
 };

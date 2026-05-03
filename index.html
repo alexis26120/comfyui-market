@@ -9,8 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -75,12 +74,6 @@
             transition: all 0.2s ease;
         }
 
-        .btn-tactile:hover {
-            background: linear-gradient(180deg, rgba(40, 40, 40, 1) 0%, rgba(20, 20, 20, 1) 100%);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -98,11 +91,8 @@
     <div class="bg-grain bg-grain-overlay"></div>
     <header class="fixed top-0 w-full z-40 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-4 hover:opacity-80 transition-opacity">
-                <div
-                    class="w-9 h-9 bg-white rounded flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.15)]">
-                    <span class="material-symbols-outlined text-black text-[20px]">filter_vintage</span>
-                </div>
+            <a href="index.html" class="flex items-center gap-4">
+                <img src="./logo.svg" alt="Logo" style="height: 32px; width: auto;" class="block">
                 <div class="flex flex-col justify-center h-full">
                     <span class="font-display font-bold text-lg leading-none tracking-tight text-white">ComfyUI
                         Market</span>
@@ -112,45 +102,33 @@
             <div class="flex items-center gap-6">
                 <!-- Documentation link removed -->
                 <a href="dashboard.html"
-                    class="btn-tactile px-4 py-2 rounded-lg flex items-center gap-2 text-sm text-gray-300 hover:text-white group">
+                    class="btn-tactile px-4 py-2 rounded-lg flex items-center gap-2 text-sm text-gray-300 group">
                     <span class="font-medium tracking-wide">Connexion</span>
                 </a>
             </div>
         </div>
     </header>
-    <main class="flex-grow flex flex-col items-center justify-center relative px-6 pt-20 pb-12 z-10">
-        <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-glow-gradient pointer-events-none">
-        </div>
-        <div class="w-full max-w-2xl mx-auto text-center space-y-10 animate-fade-in-up">
-            <div class="space-y-4">
-                <div
-                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-4">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wide uppercase">Beta
-                        Access Live</span>
-                </div>
+    <main class="flex-grow flex flex-col items-center justify-center relative px-6 pt-24 pb-12 z-10">
+        <div class="w-full max-w-xl mx-auto text-center space-y-8">
+            <div class="space-y-3">
                 <h1
-                    class="font-display text-5xl md:text-7xl font-bold tracking-tighter leading-[0.95] bg-clip-text text-transparent bg-gradient-to-b from-slate-900 to-slate-600 dark:from-white dark:to-slate-500 pb-2">
-                    Monetize your files.<br />Instantly.
+                    class="font-display text-4xl md:text-5xl font-bold tracking-tight text-white pb-1">
+                    Vendez vos workflows ComfyUI
                 </h1>
-                <p class="text-lg text-slate-600 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
-                    Upload your workflow, set your price, and get a shareable link. No storefront setup required.
+                <p class="text-base text-text-muted max-w-md mx-auto leading-relaxed">
+                    Uploadez votre fichier, fixez votre prix, obtenez un lien de paiement. Pas de boutique à configurer.
                 </p>
             </div>
             <form action="upload.php" class="group relative flex flex-col gap-6" enctype="multipart/form-data"
                 method="POST">
                 <div class="relative w-full max-w-[280px] mx-auto z-20">
                     <label class="sr-only" for="price">Set your price</label>
-                    <div class="relative flex items-center group/input">
+                    <div class="relative flex items-center">
                         <div
-                            class="absolute inset-0 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-white/5 dark:to-white/10 rounded-2xl blur-lg opacity-0 group-hover/input:opacity-50 transition-opacity duration-500">
-                        </div>
-                        <div
-                            class="absolute left-6 text-text-muted text-2xl font-display font-medium pointer-events-none">
-                            $</div>
+                            class="absolute right-6 text-text-muted text-2xl font-display font-medium pointer-events-none">
+                            €</div>
                         <input
-                            class="relative z-10 w-full bg-white dark:bg-[#080808] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-white text-3xl font-display font-bold text-center py-5 pl-8 pr-4 rounded-2xl focus:ring-0 focus:border-slate-400 dark:focus:border-slate-500 placeholder-slate-300 dark:placeholder-[#333] shadow-tactile transition-all"
+                            class="relative z-10 w-full bg-white dark:bg-[#080808] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-white text-3xl font-display font-bold text-center py-5 pl-12 pr-12 rounded-2xl focus:ring-0 focus:border-slate-400 dark:focus:border-slate-500 placeholder-slate-300 dark:placeholder-[#333] shadow-tactile"
                             id="price" min="0.50" name="price" placeholder="5.00" required="" step="0.01"
                             type="number" />
                     </div>
@@ -158,36 +136,26 @@
                         price</div>
                 </div>
                 <div
-                    class="upload-area relative w-full aspect-[2/1] md:aspect-[3/1] rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-6 transition-all duration-500 overflow-hidden bg-slate-50/50 dark:bg-transparent">
-                    <div class="absolute top-4 left-4 w-3 h-3 border-l border-t border-white/10 opacity-50">
-                    </div>
-                    <div class="absolute top-4 right-4 w-3 h-3 border-r border-t border-white/10 opacity-50">
-                    </div>
-                    <div class="absolute bottom-4 left-4 w-3 h-3 border-l border-b border-white/10 opacity-50">
-                    </div>
-                    <div class="absolute bottom-4 right-4 w-3 h-3 border-r border-b border-white/10 opacity-50">
-                    </div>
+                    class="upload-area relative w-full aspect-[2/1] md:aspect-[3/1] rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-6 overflow-hidden bg-slate-50/50 dark:bg-transparent">
                     <div
-                        class="flex flex-col items-center gap-3 z-10 transition-transform group-hover:scale-105 duration-300">
+                        class="flex flex-col items-center gap-3 z-10">
                         <div
-                            class="w-16 h-16 rounded-2xl bg-[#151515] shadow-sm border border-white/10 flex items-center justify-center group-hover:shadow-glow transition-shadow duration-300">
-                            <span
-                                class="material-icons-round text-3xl text-text-muted group-hover:text-black dark:group-hover:text-white transition-colors">cloud_upload</span>
+                            class="w-12 h-12 rounded-lg bg-[#151515] border border-white/10 flex items-center justify-center">
+                            <span class="material-icons text-2xl text-text-muted">upload_file</span>
                         </div>
                         <div class="text-center">
-                            <h3 class="text-base font-medium text-white">Drag &amp; drop your
-                                files</h3>
-                            <p class="text-sm text-text-muted mt-1">or click below to browse</p>
+                            <h3 class="text-sm font-medium text-white">Glissez votre fichier ici</h3>
+                            <p class="text-xs text-text-muted mt-1">ou cliquez pour parcourir</p>
                         </div>
                     </div>
                     <label
-                        class="cursor-pointer mt-2 px-8 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black font-semibold text-sm shadow-tactile hover:translate-y-px active:translate-y-0.5 active:shadow-tactile-pressed transition-all duration-200 z-20"
+                        class="cursor-pointer mt-2 px-8 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black font-semibold text-sm shadow-tactile z-20"
                         for="file_upload">
                         Select File
                     </label>
                     <input class="hidden" id="file_upload" name="file_upload" required="" type="file" />
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                        class="absolute inset-0 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-white/5 dark:to-transparent opacity-0 pointer-events-none">
                     </div>
                 </div>
                 <p class="text-xs text-text-muted font-mono">
@@ -195,39 +163,23 @@
                 </p>
                 <div class="pt-4">
                     <button
-                        class="w-full max-w-xs mx-auto px-8 py-4 rounded-xl bg-slate-900 dark:bg-[#111] border border-slate-800 dark:border-[#333] text-white font-display font-semibold text-base shadow-tactile hover:bg-slate-800 dark:hover:bg-[#1a1a1a] hover:border-slate-600 dark:hover:border-[#444] hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2"
+                        class="w-full max-w-xs mx-auto px-8 py-4 rounded-xl bg-slate-900 dark:bg-[#111] border border-slate-800 dark:border-[#333] text-white font-display font-semibold text-base shadow-tactile flex items-center justify-center gap-2"
                         type="submit">
-                        <span>Create Payment Link</span>
-                        <span class="material-icons-round text-lg opacity-70">arrow_forward</span>
+                        <span class="w-full text-center">Create Payment Link</span>
                     </button>
                 </div>
             </form>
         </div>
     </main>
-    <footer class="fixed bottom-0 w-full p-6 z-20 pointer-events-none hidden md:block">
-        <div class="max-w-7xl mx-auto flex justify-between items-end">
-            <div class="flex gap-12 text-xs font-mono text-text-muted">
-                <div>
-                    <span class="block text-white font-semibold mb-1">0%</span>
-                    <span>Platform Fee</span>
-                </div>
-                <div>
-                    <span class="block text-white font-semibold mb-1">Stripe</span>
-                    <span>Secured Payments</span>
-                </div>
-                <div>
-                    <span class="block text-white font-semibold mb-1">Instant</span>
-                    <span>Payouts</span>
-                </div>
-            </div>
-            <div class="text-right text-xs text-text-muted">
-                <p>© 2024 ComfyUI Market. All rights reserved.</p>
-            </div>
+    <footer class="w-full p-6 z-20 bg-[#050505]">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <p class="text-xs text-text-muted">© 2024 ComfyUI Market</p>
+            <p class="text-xs text-text-muted">0% frais · Stripe · Paiements sécurisés</p>
         </div>
     </footer>
     <footer class="md:hidden py-8 border-t border-white/10 mt-auto bg-[#050505]">
         <div class="text-center text-xs text-text-muted">
-            <p>© 2024 ComfyUI Market.</p>
+            <p>© 2024 ComfyUI Market</p>
         </div>
     </footer>
     <script>
@@ -245,31 +197,56 @@
         resultView.innerHTML = `
             <div class="glass-panel p-8 rounded-2xl border-luminous flex flex-col items-center gap-6">
                 <div class="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                    <span class="material-icons-round text-5xl text-emerald-400">check_circle</span>
+                    <span class="material-icons text-5xl text-emerald-400">check_circle</span>
                 </div>
                 <div class="space-y-2">
                     <h2 class="text-3xl font-display font-bold text-white">Link Generated!</h2>
                     <p class="text-text-muted">Your payment link is ready to share.</p>
                 </div>
                 
-                <div class="w-full relative group">
-                    <div class="absolute inset-0 bg-white/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="w-full relative">
                     <div class="relative flex gap-2">
-                        <input type="text" readonly value="https://comfyui.market/l/fe42a-89x21" 
-                            class="w-full bg-[#0A0A0A] border border-white/10 text-gray-300 font-mono text-sm py-3 px-4 rounded-xl focus:ring-0 focus:border-white/20">
-                        <button class="btn-tactile px-5 rounded-xl text-white font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all text-sm flex items-center gap-2">
-                            <span class="material-icons-round text-lg">content_copy</span>
-                            <span>Copy</span>
+                        <input type="text" readonly id="share-link-input"
+                            class="w-full bg-[#0A0A0A] border border-white/10 text-gray-300 font-mono text-sm py-3 px-4 rounded-xl focus:ring-0 focus:border-white/20 outline-none">
+                        <button id="copy-btn" class="btn-tactile px-5 rounded-xl text-white font-medium shadow-lg text-sm flex items-center gap-2 whitespace-nowrap min-w-[100px] justify-center">
+                            <span class="material-icons text-lg">content_copy</span>
+                            <span id="copy-text">Copy</span>
                         </button>
                     </div>
                 </div>
             </div>
             
-            <button onclick="location.reload()" class="text-text-muted hover:text-white text-sm font-medium transition-colors">
+            <button onclick="location.reload()" class="text-text-muted text-sm font-medium">
                 Create another link
             </button>
         `;
         document.querySelector('main').appendChild(resultView);
+
+        // Copy Functionality
+        const copyBtn = resultView.querySelector('#copy-btn');
+        const copyText = resultView.querySelector('#copy-text');
+        const shareLinkInput = resultView.querySelector('#share-link-input');
+        const copyIcon = copyBtn.querySelector('.material-icons');
+
+        copyBtn.addEventListener('click', () => {
+            if (!shareLinkInput.value) return;
+
+            navigator.clipboard.writeText(shareLinkInput.value).then(() => {
+                // Success Feedback
+                const originalIcon = copyIcon.textContent;
+                copyIcon.textContent = 'check';
+                copyText.textContent = 'Copied!';
+                copyBtn.classList.add('bg-emerald-500/20', 'border-emerald-500/50', 'text-emerald-400');
+
+                setTimeout(() => {
+                    copyIcon.textContent = originalIcon;
+                    copyText.textContent = 'Copy';
+                    copyBtn.classList.remove('bg-emerald-500/20', 'border-emerald-500/50', 'text-emerald-400');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy class content: ', err);
+            });
+        });
 
         // Create preview container (hidden by default)
         const previewContainer = document.createElement('div');
@@ -278,7 +255,7 @@
             <div class="relative w-20 h-20 group-hover:scale-105 transition-transform duration-300">
                 <img id="preview-image" src="" alt="Preview" class="w-full h-full object-cover rounded-xl shadow-lg border border-white/10 hidden">
                 <div id="preview-icon" class="w-full h-full bg-[#151515] rounded-xl border border-white/10 flex items-center justify-center shadow-lg">
-                    <span class="material-icons-round text-4xl text-emerald-400">check_circle</span>
+                    <span class="material-symbols-outlined text-4xl text-emerald-400">check_circle</span>
                 </div>
             </div>
             <div class="text-center w-full">
@@ -299,7 +276,9 @@
         function handleFile(file) {
             if (!file) return;
 
-            // Show filename
+            // Show filename (check for underscores if needed, but filenames can have them. Hiding explicit technical strings)
+            // If user meant "No underscores" in the UI texts, we are good. If they meant in the filename, we can replace.
+            // Assuming UI texts for now.
             filenameDisplay.textContent = file.name;
 
             // Check if image
@@ -367,8 +346,7 @@
                     form.style.display = 'none'; // Form
 
                     // Update Link in Result View
-                    const linkInput = resultView.querySelector('input');
-                    linkInput.value = result.link;
+                    shareLinkInput.value = result.link;
 
                     // Show Result
                     resultView.classList.remove('hidden');

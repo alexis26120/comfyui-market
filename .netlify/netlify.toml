@@ -1,0 +1,55 @@
+functionsDirectory = "C:\\Users\\playl\\Desktop\\monsite\\netlify\\functions"
+functionsDirectoryOrigin = "config-v1"
+redirectsOrigin = "config"
+plugins = []
+headers = []
+
+[build]
+publish = "C:\\Users\\playl\\Desktop\\monsite"
+publishOrigin = "config"
+functions = "C:\\Users\\playl\\Desktop\\monsite\\netlify\\functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[dev]
+framework = "#static"
+
+[functions]
+
+[functions."*"]
+
+[[redirects]]
+from = "/l/*"
+to = "/unlock.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]

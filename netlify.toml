@@ -6,6 +6,11 @@
   framework = "#static"
 
 [[redirects]]
+  from = "/l/*"
+  to = "/unlock.html"
+  status = 200
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
