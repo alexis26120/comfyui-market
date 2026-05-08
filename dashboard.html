@@ -59,10 +59,20 @@
             <img src="./logo.svg" alt="Logo" style="height: 28px; width: auto;" class="block">
             <span class="font-display font-semibold text-sm text-white">ComfyUI Market</span>
         </a>
-        <a href="index.html" class="btn px-3 py-1.5 rounded text-sm flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">add</span>
-            <span>Nouveau lien</span>
-        </a>
+        <div class="flex items-center gap-2">
+            <span id="fanvue-status" class="hidden items-center gap-1.5 text-xs px-2.5 py-1.5 rounded border">
+                <span id="fanvue-dot" class="w-1.5 h-1.5 rounded-full"></span>
+                <span id="fanvue-label"></span>
+            </span>
+            <a id="fanvue-connect-btn" href="/.netlify/functions/auth-login" class="btn px-3 py-1.5 rounded text-sm flex items-center gap-1.5 hidden">
+                <span class="material-symbols-outlined text-[16px]">link</span>
+                <span>Connecter Fanvue</span>
+            </a>
+            <a href="index.html" class="btn px-3 py-1.5 rounded text-sm flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Nouveau lien</span>
+            </a>
+        </div>
     </nav>
 
     <main class="relative z-10 flex-grow w-full max-w-6xl mx-auto px-6 py-8">
@@ -330,39 +340,35 @@
             }).join('');
         }
 
-        function renderRevenueChart(data, period) {
+// Override renderRevenueChart to support dynamic date range
+        function renderRevenueChartDynamic(data, period) {
             const ctx = document.getElementById('revenue-chart').getContext('2d');
-
             const dailyRevenue = {};
             data.forEach(t => {
                 if (!dailyRevenue[t.date]) dailyRevenue[t.date] = 0;
                 dailyRevenue[t.date] += t.amount;
             });
 
-            const now = new Date('2026-04-27');
-            let startDate;
+            const now = new Date();
+            let startDate, endDate = new Date(now);
+
             if (period === 'all') {
-                startDate = new Date('2025-12-26');
+                const dates = data.map(t => t.date).filter(Boolean).sort();
+                startDate = dates.length ? new Date(dates[0]) : new Date(now.getFullYear(), now.getMonth(), 1);
             } else {
                 startDate = new Date(now);
                 startDate.setDate(startDate.getDate() - parseInt(period));
             }
-            const endDate = new Date('2026-04-27');
 
             const allDates = [];
             for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
                 allDates.push(d.toISOString().split('T')[0]);
             }
 
-            const labels = allDates.map(d => {
-                const dt = new Date(d);
-                return dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-            });
+            const labels = allDates.map(d => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }));
             const values = allDates.map(d => Math.round((dailyRevenue[d] || 0) * 100) / 100);
 
-            if (window.revenueChartInstance) {
-                window.revenueChartInstance.destroy();
-            }
+            if (window.revenueChartInstance) window.revenueChartInstance.destroy();
 
             window.revenueChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -398,41 +404,97 @@
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { color: '#1a1a1a' },
-                            ticks: { color: '#555', font: { size: 10 }, maxTicksLimit: 10 }
-                        },
+                        x: { grid: { color: '#1a1a1a' }, ticks: { color: '#555', font: { size: 10 }, maxTicksLimit: 10 } },
                         y: {
                             beginAtZero: true,
                             grid: { color: '#1a1a1a' },
-                            ticks: {
-                                color: '#555', font: { size: 10 },
-                                callback: v => v > 0 ? v.toFixed(0) + ' €' : '0'
-                            }
+                            ticks: { color: '#555', font: { size: 10 }, callback: v => v > 0 ? v.toFixed(0) + ' €' : '0' }
                         }
                     }
                 }
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTransactionsTable(transactions);
-            renderRecentTransactions(recentTx);
-            renderTopBuyers(topBuyers);
-            renderRevenueBreakdown(transactions);
-            renderRevenueChart(transactions, 'all');
+        function setStatus(live) {
+            const el = document.getElementById('fanvue-status');
+            const dot = document.getElementById('fanvue-dot');
+            const label = document.getElementById('fanvue-label');
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            if (live) {
+                el.style.cssText = 'border-color:#1a3a1a;background:#0a1f0a';
+                dot.style.background = '#22c55e';
+                label.textContent = 'Live';
+                label.style.color = '#4ade80';
+            } else {
+                el.style.cssText = 'border-color:#2a2a1a;background:#1a1a0a';
+                dot.style.background = '#eab308';
+                label.textContent = 'Démo';
+                label.style.color = '#facc15';
+                document.getElementById('fanvue-connect-btn').classList.remove('hidden');
+            }
+        }
 
+        function renderAll(txData, recentData, buyersData, period) {
+            document.getElementById('stat-sales').textContent = txData.length;
+            const total = txData.reduce((s, t) => s + t.amount, 0);
+            const now = new Date();
+            const monthly = txData.filter(t => {
+                const d = new Date(t.date);
+                return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+            }).reduce((s, t) => s + t.amount, 0);
+            document.getElementById('stat-revenue').textContent = formatMoney(total);
+            document.getElementById('stat-monthly').textContent = formatMoney(monthly);
+            renderTransactionsTable(txData);
+            renderRecentTransactions(recentData);
+            renderTopBuyers(buyersData);
+            renderRevenueBreakdown(txData);
+            renderRevenueChartDynamic(txData, period);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Render hardcoded demo data immediately
+            let activeTx = transactions;
+            let activeRecent = recentTx;
+            let activeBuyers = topBuyers;
             let currentPeriod = 'all';
-            document.querySelectorAll('.period-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.period-btn').forEach(b => {
-                        b.className = 'period-btn px-2.5 py-1 rounded text-xs text-text-muted';
+
+            renderAll(activeTx, activeRecent, activeBuyers, currentPeriod);
+
+            // Period selector wiring
+            function wirePeriodBtns() {
+                document.querySelectorAll('.period-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.period-btn').forEach(b => {
+                            b.className = 'period-btn px-2.5 py-1 rounded text-xs text-text-muted';
+                        });
+                        btn.className = 'period-btn px-2.5 py-1 rounded text-xs text-white bg-[#1e1e1e]';
+                        currentPeriod = btn.dataset.period;
+                        renderRevenueChartDynamic(activeTx, currentPeriod);
                     });
-                    btn.className = 'period-btn px-2.5 py-1 rounded text-xs text-white bg-[#1e1e1e]';
-                    currentPeriod = btn.dataset.period;
-                    renderRevenueChart(transactions, currentPeriod);
                 });
-            });
+            }
+            wirePeriodBtns();
+
+            // Try to load live Fanvue data
+            try {
+                const res = await fetch('/.netlify/functions/get-fanvue-data');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+
+                if (data.connected && data.transactions) {
+                    activeTx = data.transactions;
+                    activeRecent = data.recentTx;
+                    activeBuyers = data.topBuyers;
+                    renderAll(activeTx, activeRecent, activeBuyers, currentPeriod);
+                    setStatus(true);
+                } else {
+                    setStatus(false);
+                }
+            } catch (e) {
+                console.warn('Fanvue data unavailable, using demo data.', e);
+                setStatus(false);
+            }
         });
     </script>
 </body>
