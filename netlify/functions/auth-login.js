@@ -22,8 +22,8 @@ exports.handler = async (event, context) => {
     // 2. Generate Secure State
     const state = crypto.randomBytes(32).toString('hex');
 
-    // 3. Define Scopes (Exact list requested)
-    const scopes = 'read:self read:insights read:creator offline_access';
+    // 3. Define Scopes (valid Fanvue scopes per documentation)
+    const scopes = 'openid read:self offline_access';
 
     // 4. Construct URL
     const params = new URLSearchParams();
