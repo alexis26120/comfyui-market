@@ -4,172 +4,148 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Unlock Content - ComfyUI Market</title>
+    <title>Débloquer — ComfyUI Market</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        background: "#050505",
-                        surface: "#0A0A0A",
-                        "border-subtle": "rgba(255, 255, 255, 0.08)",
-                        "text-main": "#ffffff",
-                        "text-muted": "#888888",
-                        "accent-amber": "#F59E0B",
-                        "accent-violet": "#8B5CF6",
+                        background: "#0D1117",
+                        surface: "#161B22",
+                        "surface-2": "#1C2128",
+                        "text-main": "#E6EDF3",
+                        "text-muted": "#7D8590",
+                        "text-dim": "#484F58",
+                        "go": "#3FB950",
+                        "go-deep": "#238636",
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
-                    backgroundImage: {
-                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.07%22/%3E%3C/svg%3E')",
-                    }
                 },
             },
         };
     </script>
     <style>
-        body {
-            background-color: #050505;
-        }
+        body { background-color: #0D1117; }
 
-        .bg-grain-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.45;
-            mix-blend-mode: overlay;
-        }
+        .panel { background: #161B22; border: 1px solid #30363D; }
+        .panel-hd { background: #1C2128; border-bottom: 1px solid #30363D; }
 
-        .glass-panel {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+        .btn-primary {
+            background: #238636;
+            border: 1px solid rgba(63, 185, 80, 0.4);
+            color: #fff;
+            transition: background 0.15s ease;
         }
+        .btn-primary:hover:not(:disabled) { background: #2ea043; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn-tactile {
-            background: linear-gradient(180deg, rgba(30, 30, 30, 1) 0%, rgba(10, 10, 10, 1) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.5);
-            transition: all 0.2s ease;
+        .btn-ghost {
+            background: #161B22;
+            border: 1px solid #30363D;
+            color: #E6EDF3;
+            transition: background 0.15s ease;
         }
+        .btn-ghost:hover { background: #1C2128; }
 
-        .secure-blur {
-            filter: blur(20px);
-            user-select: none;
-            pointer-events: none;
+        .btn-download {
+            background: rgba(63, 185, 80, 0.1);
+            border: 1px solid rgba(63, 185, 80, 0.3);
+            color: #3FB950;
+            transition: background 0.15s ease;
         }
+        .btn-download:hover { background: rgba(63, 185, 80, 0.18); }
     </style>
 </head>
 
-<body class="bg-background text-text-main font-sans min-h-screen flex flex-col relative">
-    <div class="bg-grain bg-grain-overlay"></div>
+<body class="bg-background text-text-main font-sans min-h-screen flex flex-col">
 
-    <header class="fixed top-0 w-full z-40 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-4">
-                <div
-                    class="w-9 h-9 bg-white rounded flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.15)]">
-                    <span class="material-symbols-outlined text-black text-[20px]">filter_vintage</span>
-                </div>
-                <div class="flex flex-col justify-center h-full">
-                    <span class="font-display font-bold text-lg leading-none tracking-tight text-white">ComfyUI
-                        Market</span>
-                </div>
+    <header class="sticky top-0 z-40 w-full bg-surface border-b border-[#30363D]">
+        <div class="max-w-5xl mx-auto px-6 h-14 flex items-center">
+            <a href="/" class="flex items-center gap-3">
+                <img src="/logo.svg" alt="Logo" style="height: 22px; width: auto;" class="block opacity-90">
+                <span class="font-mono font-bold text-sm text-text-main tracking-tight">ComfyUI Market</span>
             </a>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center relative px-4 pt-24 pb-12 z-10 w-full">
-        <div class="w-full max-w-md mx-auto space-y-6" id="loading-state">
-            <div class="text-center text-text-muted animate-pulse">Loading content...</div>
+    <main class="flex-grow flex items-center justify-center px-4 py-16">
+
+        <!-- Chargement -->
+        <div id="loading-state" class="font-mono text-xs text-text-muted animate-pulse">
+            &gt; chargement du contenu...
         </div>
 
-        <div class="w-full max-w-md mx-auto space-y-6 hidden" id="content-card">
-            <div class="glass-panel rounded-2xl overflow-hidden relative group border border-white/10">
-                <!-- Preview Area -->
-                <div class="relative w-full aspect-[4/3] bg-[#111] overflow-hidden flex items-center justify-center">
+        <!-- Carte contenu -->
+        <div class="w-full max-w-sm mx-auto hidden" id="content-card">
+            <div class="panel rounded-md overflow-hidden">
 
-                    <!-- Secured/Blurred Content Placeholder -->
-                    <div id="preview-blur"
-                        class="absolute inset-0 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 secure-blur opacity-50 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-9xl text-white/20">lock</span>
+                <!-- En-tête panneau -->
+                <div class="panel-hd px-4 py-2 flex items-center gap-2">
+                    <span id="status-dot" class="w-2 h-2 rounded-full bg-text-dim"></span>
+                    <span id="status-label" class="font-mono text-xs text-text-dim">// contenu verrouillé</span>
+                </div>
+
+                <!-- Zone prévisualisation -->
+                <div class="relative w-full aspect-[4/3] bg-background flex items-center justify-center overflow-hidden border-b border-[#30363D]">
+                    <!-- État verrouillé -->
+                    <div id="lock-overlay" class="flex flex-col items-center gap-3">
+                        <span class="material-symbols-outlined text-5xl text-text-dim">lock</span>
+                        <p class="font-mono text-xs text-text-dim uppercase tracking-widest">Contenu sécurisé</p>
                     </div>
-
-                    <!-- Lock Icon Overlay -->
-                    <div id="lock-overlay" class="relative z-10 flex flex-col items-center gap-3">
-                        <div
-                            class="w-16 h-16 rounded-full bg-black/60 backdrop-blur border border-white/10 flex items-center justify-center shadow-2xl">
-                            <span class="material-symbols-outlined text-3xl text-white">lock</span>
-                        </div>
-                        <p class="text-xs font-mono uppercase tracking-widest text-white/60">Secure Content</p>
-                    </div>
-
-                    <!-- Success State (Hidden initially) -->
-                    <div id="success-icon" class="hidden relative z-10 flex flex-col items-center gap-3">
-                        <div
-                            class="w-16 h-16 rounded-full bg-emerald-500/20 backdrop-blur border border-emerald-500/30 flex items-center justify-center shadow-glow">
-                            <span class="material-symbols-outlined text-3xl text-emerald-400">check_circle</span>
-                        </div>
+                    <!-- État débloqué (caché) -->
+                    <div id="success-icon" class="hidden flex-col items-center gap-3">
+                        <span class="material-symbols-outlined text-5xl text-go">check_circle</span>
+                        <p class="font-mono text-xs text-go uppercase tracking-widest">Accès accordé</p>
                     </div>
                 </div>
 
-                <!-- Info Area -->
-                <div class="p-6 space-y-6">
+                <!-- Informations -->
+                <div class="p-5 space-y-5">
                     <div>
-                        <h1 id="file-name" class="font-display text-2xl font-bold text-white mb-1 truncate">
-                            Filename_Placeholder.json</h1>
-                        <p id="file-desc" class="text-sm text-text-muted">High-fidelity ComfyUI workflow.</p>
+                        <p class="font-mono text-xs text-text-dim mb-1">// fichier</p>
+                        <h1 id="file-name" class="font-mono text-base font-bold text-text-main truncate">chargement...</h1>
+                        <p id="file-desc" class="text-xs text-text-muted mt-1">Workflow ComfyUI</p>
                     </div>
 
-                    <div class="pt-4 border-t border-white/5 flex items-center justify-between">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-text-muted uppercase tracking-wider">Price</span>
-                            <span id="price-display" class="font-display text-2xl font-bold text-white">€0.00</span>
+                    <div class="border-t border-[#30363D] pt-4 flex items-center justify-between gap-3">
+                        <div>
+                            <p class="font-mono text-xs text-text-dim">// prix</p>
+                            <p id="price-display" class="font-mono text-2xl font-bold text-text-main">€0.00</p>
                         </div>
                         <button id="unlock-btn"
-                            class="btn-tactile px-6 py-3 rounded-xl text-white font-bold tracking-wide shadow-lg hover:shadow-glow flex items-center gap-2 transition-all">
-                            <span>Unlock Now</span>
-                            <span class="material-symbols-outlined text-lg">lock_open</span>
+                            class="btn-primary px-5 py-2.5 rounded font-mono text-sm font-medium flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]">lock_open</span>
+                            Débloquer
                         </button>
                         <a id="download-btn" href="#"
-                            class="hidden btn-tactile px-6 py-3 rounded-xl text-emerald-400 font-bold tracking-wide shadow-lg border-emerald-500/30 bg-emerald-900/10 hover:bg-emerald-900/20 flex items-center gap-2 transition-all">
-                            <span>Download</span>
-                            <span class="material-symbols-outlined text-lg">download</span>
+                            class="hidden btn-download px-5 py-2.5 rounded font-mono text-sm font-medium flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]">download</span>
+                            Télécharger
                         </a>
                     </div>
                 </div>
             </div>
 
-            <p class="text-center text-xs text-text-muted">
-                Secured by Stripe • Instant Delivery
+            <p class="text-center font-mono text-xs text-text-dim mt-4">
+                Sécurisé par Stripe · Livraison instantanée
             </p>
         </div>
 
-        <div id="error-state" class="hidden text-center text-red-400">
-            <p>Content not found.</p>
+        <!-- Erreur -->
+        <div id="error-state" class="hidden font-mono text-xs text-red-400">
+            &gt; Contenu introuvable.
         </div>
     </main>
 
     <script>
-        // Get slug from URL
         const path = window.location.pathname;
-        const slug = path.split('/').pop().split('.')[0]; // Handle /l/slug or just slug
-        // In clean URLs via Netlify Rewrite, pathname might be /l/xyz
         const realSlug = path.replace('/l/', '');
 
         const contentCard = document.getElementById('content-card');
@@ -179,7 +155,8 @@
         const downloadBtn = document.getElementById('download-btn');
         const lockOverlay = document.getElementById('lock-overlay');
         const successIcon = document.getElementById('success-icon');
-        const previewBlur = document.getElementById('preview-blur');
+        const statusDot = document.getElementById('status-dot');
+        const statusLabel = document.getElementById('status-label');
 
         let currentProduct = null;
 
@@ -187,25 +164,17 @@
             try {
                 const response = await fetch(`/.netlify/functions/get-link?slug=${realSlug}`);
                 const data = await response.json();
-
-                if (!data.success) {
-                    throw new Error(data.error);
-                }
+                if (!data.success) throw new Error(data.error);
 
                 currentProduct = data.product;
-
-                // Populate DOM
                 document.getElementById('file-name').textContent = currentProduct.name;
-                document.getElementById('file-desc').textContent = currentProduct.description || 'Secure file';
+                document.getElementById('file-desc').textContent = currentProduct.description || 'Workflow ComfyUI';
                 document.getElementById('price-display').textContent = '€' + parseFloat(currentProduct.price).toFixed(2);
 
-                if (currentProduct.is_paid) {
-                    showPaidState(currentProduct.download_url);
-                }
+                if (currentProduct.is_paid) showPaidState(currentProduct.download_url);
 
                 loadingState.classList.add('hidden');
                 contentCard.classList.remove('hidden');
-
             } catch (error) {
                 console.error(error);
                 loadingState.classList.add('hidden');
@@ -220,39 +189,39 @@
 
             lockOverlay.classList.add('hidden');
             successIcon.classList.remove('hidden');
-            previewBlur.classList.remove('secure-blur');
-            previewBlur.style.filter = 'blur(0px)';
-            previewBlur.classList.add('opacity-100');
+            successIcon.classList.add('flex');
+
+            statusDot.classList.remove('bg-text-dim');
+            statusDot.classList.add('bg-go');
+            statusLabel.textContent = '// accès accordé';
+            statusLabel.classList.remove('text-text-dim');
+            statusLabel.classList.add('text-go');
         }
 
         unlockBtn.addEventListener('click', async () => {
-            const originalText = unlockBtn.innerHTML;
+            const orig = unlockBtn.innerHTML;
             unlockBtn.disabled = true;
-            unlockBtn.innerHTML = 'Processing...';
+            unlockBtn.innerHTML = '<span class="font-mono text-xs">traitement...</span>';
 
             try {
-                const response = await fetch('/.netlify/functions/create-checkout', {
+                const res = await fetch('/.netlify/functions/create-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ productId: currentProduct.id })
                 });
-
-                const result = await response.json();
+                const result = await res.json();
 
                 if (result.success) {
-                    // Simulate refresh/success
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    alert('Payment Error');
+                    alert('Erreur de paiement');
                     unlockBtn.disabled = false;
-                    unlockBtn.innerHTML = originalText;
+                    unlockBtn.innerHTML = orig;
                 }
             } catch (e) {
                 console.error(e);
                 unlockBtn.disabled = false;
-                unlockBtn.innerHTML = originalText;
+                unlockBtn.innerHTML = orig;
             }
         });
 
