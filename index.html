@@ -1,382 +1,419 @@
 <!DOCTYPE html>
-<html class="dark" lang="fr">
+<html lang="fr">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Creator Landing & Upload</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <title>ComfyUI Market — Vendez vos workflows en un lien</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
     <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        background: "#050505",
-                        surface: "#0A0A0A",
-                        "border-subtle": "rgba(255, 255, 255, 0.08)",
-                        "text-main": "#ffffff",
-                        "text-muted": "#888888",
-                        "accent-amber": "#F59E0B",
-                        "accent-violet": "#8B5CF6",
+                        ink: "#0F172A",
+                        "ink-2": "#475569",
+                        "ink-3": "#94A3B8",
+                        line: "#EAECEF",
+                        "line-2": "#F1F5F9",
+                        soft: "#F8FAFC",
+                        cream: "#FAFAF7",
+                        accent: "#10B981",
+                        "accent-d": "#059669",
+                        "accent-l": "#D1FAE5",
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
                     },
-                    backgroundImage: {
-                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.07%22/%3E%3C/svg%3E')",
-                    },
-                    boxShadow: {
-                        'tactile': 'inset 0 1px 0 0 rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.5)',
-                        'tactile-pressed': 'inset 0 2px 4px rgba(0,0,0,0.4)',
-                        'glow': '0 0 40px rgba(255,255,255,0.05)',
-                    }
                 },
             },
         };
     </script>
     <style>
-        body {
-            background-color: #050505;
+        body { background: #FFFFFF; color: #0F172A; }
+        .material-symbols-rounded { font-variation-settings: 'opsz' 24, 'wght' 400, 'FILL' 0, 'GRAD' 0; }
+
+        .card {
+            background: #FFFFFF;
+            border: 1px solid #EAECEF;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -8px rgba(15, 23, 42, 0.06);
         }
 
-        .bg-grain-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.45;
-            mix-blend-mode: overlay;
+        .btn-primary {
+            background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+        .btn-primary:hover:not(:disabled) {
+            filter: brightness(1.05);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .btn-primary:active:not(:disabled) { transform: translateY(1px); }
+        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .btn-secondary {
+            background: #fff;
+            color: #0F172A;
+            border: 1px solid #EAECEF;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+        .btn-secondary:hover { background: #F8FAFC; border-color: #CBD5E1; }
+
+        .input-field {
+            background: #fff;
+            border: 1px solid #EAECEF;
+            color: #0F172A;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
-        .glass-panel {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+        .upload-zone {
+            border: 1.5px dashed #CBD5E1;
+            background: #F8FAFC;
+            transition: all 0.18s ease;
         }
-
-        .btn-tactile {
-            background: linear-gradient(180deg, rgba(30, 30, 30, 1) 0%, rgba(10, 10, 10, 1) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.08),
-                0 1px 2px rgba(0, 0, 0, 0.5);
-            transition: all 0.2s ease;
-        }
+        .upload-zone:hover { border-color: #10B981; background: #ECFDF5; }
+        .upload-zone.drag-over { border-color: #10B981; background: #D1FAE5; }
+        .upload-zone.has-file { border-style: solid; border-color: #10B981; background: #ECFDF5; }
 
         input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        .step-icon {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #D1FAE5;
         }
 
-        input[type=number] {
-            -moz-appearance: textfield;
+        .glow-ring::before {
+            content: '';
+            position: absolute;
+            inset: -120px;
+            background: radial-gradient(closest-side, rgba(16, 185, 129, 0.18), transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .badge-pill {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #D1FAE5;
         }
     </style>
 </head>
 
-<body
-    class="bg-background text-text-main font-sans min-h-screen flex flex-col relative selection:bg-white/20 selection:text-white">
-    <div class="bg-grain bg-grain-overlay"></div>
-    <header class="fixed top-0 w-full z-40 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-4">
-                <img src="./logo.svg" alt="Logo" style="height: 32px; width: auto;" class="block">
-                <div class="flex flex-col justify-center h-full">
-                    <span class="font-display font-bold text-lg leading-none tracking-tight text-white">ComfyUI
-                        Market</span>
-                    <span class="text-[10px] uppercase tracking-[0.2em] text-text-muted mt-1">Creator Dashboard</span>
-                </div>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-line">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <img src="./logo.svg" alt="Logo" style="height: 26px; width: auto;" class="block">
+                <span class="font-display font-bold text-base text-ink tracking-tight">ComfyUI Market</span>
             </a>
-            <div class="flex items-center gap-6">
-                <!-- Documentation link removed -->
-                <a href="dashboard.html"
-                    class="btn-tactile px-4 py-2 rounded-lg flex items-center gap-2 text-sm text-gray-300 group">
-                    <span class="font-medium tracking-wide">Connexion</span>
+            <nav class="flex items-center gap-2">
+                <a href="dashboard.html" class="btn-secondary px-3.5 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5">
+                    <span class="material-symbols-rounded text-[18px]">space_dashboard</span>
+                    Dashboard
                 </a>
-            </div>
+            </nav>
         </div>
     </header>
-    <main class="flex-grow flex flex-col items-center justify-center relative px-6 pt-24 pb-12 z-10">
-        <div class="w-full max-w-xl mx-auto text-center space-y-8">
-            <div class="space-y-3">
-                <h1
-                    class="font-display text-4xl md:text-5xl font-bold tracking-tight text-white pb-1">
-                    Vendez vos workflows ComfyUI
+
+    <main class="flex-grow">
+
+        <!-- Hero + Form -->
+        <section class="relative px-6 pt-16 md:pt-20 pb-20">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 badge-pill px-3 py-1 rounded-full text-xs font-semibold mb-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+                    Marketplace pour créateurs ComfyUI
+                </div>
+                <h1 class="font-display text-4xl md:text-5xl lg:text-[56px] font-extrabold text-ink leading-[1.05] tracking-tight mb-5">
+                    Vendez vos workflows<br class="hidden sm:inline">
+                    <span class="text-ink-2">en un seul lien.</span>
                 </h1>
-                <p class="text-base text-text-muted max-w-md mx-auto leading-relaxed">
-                    Uploadez votre fichier, fixez votre prix, obtenez un lien de paiement. Pas de boutique à configurer.
+                <p class="text-lg text-ink-2 max-w-xl mx-auto leading-relaxed">
+                    Uploadez votre fichier, fixez votre prix, partagez le lien.
+                    Pas de boutique à gérer, pas de mise en page à designer.
                 </p>
             </div>
-            <form action="upload.php" class="group relative flex flex-col gap-6" enctype="multipart/form-data"
-                method="POST">
-                <div class="relative w-full max-w-[280px] mx-auto z-20">
-                    <label class="sr-only" for="price">Set your price</label>
-                    <div class="relative flex items-center">
-                        <div
-                            class="absolute right-6 text-text-muted text-2xl font-display font-medium pointer-events-none">
-                            €</div>
-                        <input
-                            class="relative z-10 w-full bg-white dark:bg-[#080808] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-white text-3xl font-display font-bold text-center py-5 pl-12 pr-12 rounded-2xl focus:ring-0 focus:border-slate-400 dark:focus:border-slate-500 placeholder-slate-300 dark:placeholder-[#333] shadow-tactile"
-                            id="price" min="0.50" name="price" placeholder="5.00" required="" step="0.01"
-                            type="number" />
-                    </div>
-                    <div class="mt-2 text-xs text-slate-400 font-mono tracking-wider uppercase opacity-70">Set unlock
-                        price</div>
-                </div>
-                <div
-                    class="upload-area relative w-full aspect-[2/1] md:aspect-[3/1] rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-6 overflow-hidden bg-slate-50/50 dark:bg-transparent">
-                    <div
-                        class="flex flex-col items-center gap-3 z-10">
-                        <div
-                            class="w-12 h-12 rounded-lg bg-[#151515] border border-white/10 flex items-center justify-center">
-                            <span class="material-icons text-2xl text-text-muted">upload_file</span>
-                        </div>
-                        <div class="text-center">
-                            <h3 class="text-sm font-medium text-white">Glissez votre fichier ici</h3>
-                            <p class="text-xs text-text-muted mt-1">ou cliquez pour parcourir</p>
-                        </div>
-                    </div>
-                    <label
-                        class="cursor-pointer mt-2 px-8 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black font-semibold text-sm shadow-tactile z-20"
-                        for="file_upload">
-                        Select File
-                    </label>
-                    <input class="hidden" id="file_upload" name="file_upload" required="" type="file" />
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-white/5 dark:to-transparent opacity-0 pointer-events-none">
-                    </div>
-                </div>
-                <p class="text-xs text-text-muted font-mono">
-                    Supported formats: .json, .zip, .png (workflow embedded)
-                </p>
-                <div class="pt-4">
-                    <button
-                        class="w-full max-w-xs mx-auto px-8 py-4 rounded-xl bg-slate-900 dark:bg-[#111] border border-slate-800 dark:border-[#333] text-white font-display font-semibold text-base shadow-tactile flex items-center justify-center gap-2"
-                        type="submit">
-                        <span class="w-full text-center">Create Payment Link</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </main>
-    <footer class="w-full p-6 z-20 bg-[#050505]">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <p class="text-xs text-text-muted">© 2024 ComfyUI Market</p>
-            <p class="text-xs text-text-muted">0% frais · Stripe · Paiements sécurisés</p>
-        </div>
-    </footer>
-    <footer class="md:hidden py-8 border-t border-white/10 mt-auto bg-[#050505]">
-        <div class="text-center text-xs text-text-muted">
-            <p>© 2024 ComfyUI Market</p>
-        </div>
-    </footer>
-    <script>
-        const fileInput = document.getElementById('file_upload');
-        const uploadArea = document.querySelector('.upload-area');
-        const defaultContent = uploadArea.querySelector('.flex.flex-col');
 
-        // Form & Simulation elements
-        const form = document.querySelector('form');
-        const submitButton = form.querySelector('button[type="submit"]');
+            <!-- Form card -->
+            <div class="relative max-w-xl mx-auto mt-12 glow-ring">
+                <div class="card rounded-2xl p-6 md:p-8" id="form-card">
+                    <div class="mb-6">
+                        <h2 class="font-display text-xl font-bold text-ink">Créez votre lien de vente</h2>
+                        <p class="text-sm text-ink-2 mt-1">Cela prend 30 secondes.</p>
+                    </div>
 
-        // Create Result View (Hidden by default)
-        const resultView = document.createElement('div');
-        resultView.className = 'hidden w-full max-w-2xl mx-auto text-center space-y-8 animate-fade-in-up';
-        resultView.innerHTML = `
-            <div class="glass-panel p-8 rounded-2xl border-luminous flex flex-col items-center gap-6">
-                <div class="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                    <span class="material-icons text-5xl text-emerald-400">check_circle</span>
+                    <form class="flex flex-col gap-5" enctype="multipart/form-data" method="POST" id="upload-form">
+
+                        <!-- Prix -->
+                        <div>
+                            <label for="price" class="block text-sm font-semibold text-ink mb-2">Prix de vente</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-display text-2xl font-bold text-ink-3 select-none">€</span>
+                                <input
+                                    class="input-field w-full py-3.5 pl-11 pr-4 rounded-xl text-2xl font-display font-bold placeholder-ink-3"
+                                    id="price" min="0.50" name="price" placeholder="5.00" required step="0.01" type="number" />
+                            </div>
+                            <p class="mt-1.5 text-xs text-ink-3">Minimum 0,50 € · Sans frais de plateforme</p>
+                        </div>
+
+                        <!-- Fichier -->
+                        <div>
+                            <label class="block text-sm font-semibold text-ink mb-2">Votre fichier</label>
+                            <div class="upload-zone upload-area rounded-xl p-6 cursor-pointer">
+                                <!-- Default -->
+                                <div class="flex flex-col items-center gap-3 py-4" id="upload-default">
+                                    <div class="w-12 h-12 rounded-xl bg-white border border-line flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-rounded text-[24px] text-ink-2">cloud_upload</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-sm font-semibold text-ink">Glissez votre fichier ici</p>
+                                        <p class="text-xs text-ink-2 mt-0.5">ou <span class="text-accent-d font-semibold">parcourez</span> · .json · .zip · .png</p>
+                                    </div>
+                                </div>
+                                <!-- Preview (caché) -->
+                                <div class="hidden flex-col items-center gap-3 py-4" id="upload-preview">
+                                    <div class="w-12 h-12 rounded-xl bg-accent-l border border-accent/30 flex items-center justify-center">
+                                        <span class="material-symbols-rounded text-[26px] text-accent-d">check</span>
+                                    </div>
+                                    <div class="text-center max-w-full px-4">
+                                        <p class="text-sm font-semibold text-ink truncate" id="filename-display"></p>
+                                        <p class="text-xs text-ink-2 mt-0.5">Prêt à envoyer</p>
+                                    </div>
+                                    <button type="button" id="remove-file" class="text-xs font-medium text-rose-500 hover:text-rose-600 underline underline-offset-2">Choisir un autre fichier</button>
+                                </div>
+                            </div>
+                            <input class="hidden" id="file_upload" name="file_upload" required type="file" />
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" id="submit-btn"
+                            class="btn-primary w-full py-3.5 rounded-xl font-semibold text-[15px] flex items-center justify-center gap-2 mt-1">
+                            <span>Générer le lien de paiement</span>
+                            <span class="material-symbols-rounded text-[18px]">arrow_forward</span>
+                        </button>
+                    </form>
                 </div>
-                <div class="space-y-2">
-                    <h2 class="text-3xl font-display font-bold text-white">Link Generated!</h2>
-                    <p class="text-text-muted">Your payment link is ready to share.</p>
-                </div>
-                
-                <div class="w-full relative">
-                    <div class="relative flex gap-2">
-                        <input type="text" readonly id="share-link-input"
-                            class="w-full bg-[#0A0A0A] border border-white/10 text-gray-300 font-mono text-sm py-3 px-4 rounded-xl focus:ring-0 focus:border-white/20 outline-none">
-                        <button id="copy-btn" class="btn-tactile px-5 rounded-xl text-white font-medium shadow-lg text-sm flex items-center gap-2 whitespace-nowrap min-w-[100px] justify-center">
-                            <span class="material-icons text-lg">content_copy</span>
-                            <span id="copy-text">Copy</span>
+
+                <!-- Result view -->
+                <div class="hidden" id="result-view">
+                    <div class="card rounded-2xl p-6 md:p-8">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-10 h-10 rounded-full bg-accent-l border border-accent/30 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-rounded text-[22px] text-accent-d">check</span>
+                            </div>
+                            <div>
+                                <h2 class="font-display text-lg font-bold text-ink">Votre lien est prêt</h2>
+                                <p class="text-sm text-ink-2">Partagez-le où vous voulez.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" readonly id="share-link-input"
+                                class="input-field flex-1 py-3 px-4 rounded-xl text-sm font-mono text-ink-2 bg-soft">
+                            <button id="copy-btn" class="btn-secondary px-4 py-3 rounded-xl font-semibold text-sm flex items-center gap-1.5 whitespace-nowrap">
+                                <span class="material-symbols-rounded text-[18px]" id="copy-icon">content_copy</span>
+                                <span id="copy-text">Copier</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center mt-5">
+                        <button onclick="location.reload()" class="text-sm font-medium text-ink-2 hover:text-ink transition-colors inline-flex items-center gap-1.5">
+                            <span class="material-symbols-rounded text-[16px]">refresh</span>
+                            Créer un autre lien
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <button onclick="location.reload()" class="text-text-muted text-sm font-medium">
-                Create another link
-            </button>
-        `;
-        document.querySelector('main').appendChild(resultView);
+        </section>
 
-        // Copy Functionality
-        const copyBtn = resultView.querySelector('#copy-btn');
-        const copyText = resultView.querySelector('#copy-text');
-        const shareLinkInput = resultView.querySelector('#share-link-input');
-        const copyIcon = copyBtn.querySelector('.material-icons');
-
-        copyBtn.addEventListener('click', () => {
-            if (!shareLinkInput.value) return;
-
-            navigator.clipboard.writeText(shareLinkInput.value).then(() => {
-                // Success Feedback
-                const originalIcon = copyIcon.textContent;
-                copyIcon.textContent = 'check';
-                copyText.textContent = 'Copied!';
-                copyBtn.classList.add('bg-emerald-500/20', 'border-emerald-500/50', 'text-emerald-400');
-
-                setTimeout(() => {
-                    copyIcon.textContent = originalIcon;
-                    copyText.textContent = 'Copy';
-                    copyBtn.classList.remove('bg-emerald-500/20', 'border-emerald-500/50', 'text-emerald-400');
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy class content: ', err);
-            });
-        });
-
-        // Create preview container (hidden by default)
-        const previewContainer = document.createElement('div');
-        previewContainer.className = 'hidden flex-col items-center gap-4 z-20 w-full px-6';
-        previewContainer.innerHTML = `
-            <div class="relative w-20 h-20 group-hover:scale-105 transition-transform duration-300">
-                <img id="preview-image" src="" alt="Preview" class="w-full h-full object-cover rounded-xl shadow-lg border border-white/10 hidden">
-                <div id="preview-icon" class="w-full h-full bg-[#151515] rounded-xl border border-white/10 flex items-center justify-center shadow-lg">
-                    <span class="material-symbols-outlined text-4xl text-emerald-400">check_circle</span>
+        <!-- 3 étapes -->
+        <section class="bg-soft border-y border-line py-20 px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <p class="text-sm font-semibold text-accent-d uppercase tracking-wider mb-2">Comment ça marche</p>
+                    <h2 class="font-display text-3xl md:text-4xl font-extrabold text-ink">Trois étapes, c'est tout.</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="relative">
+                        <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center mb-5">
+                            <span class="material-symbols-rounded text-[24px]">upload_file</span>
+                        </div>
+                        <p class="font-display text-xs font-bold text-ink-3 mb-1">01</p>
+                        <h3 class="font-display text-lg font-bold text-ink mb-2">Uploadez votre workflow</h3>
+                        <p class="text-sm text-ink-2 leading-relaxed">Déposez votre fichier <span class="font-mono text-xs bg-line-2 px-1.5 py-0.5 rounded">.json</span>, <span class="font-mono text-xs bg-line-2 px-1.5 py-0.5 rounded">.zip</span> ou <span class="font-mono text-xs bg-line-2 px-1.5 py-0.5 rounded">.png</span>. Il est stocké de manière sécurisée et privée.</p>
+                    </div>
+                    <div class="relative">
+                        <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center mb-5">
+                            <span class="material-symbols-rounded text-[24px]">euro</span>
+                        </div>
+                        <p class="font-display text-xs font-bold text-ink-3 mb-1">02</p>
+                        <h3 class="font-display text-lg font-bold text-ink mb-2">Fixez votre prix</h3>
+                        <p class="text-sm text-ink-2 leading-relaxed">Vous décidez. À partir de 0,50 €. Pas d'abonnement, pas de frais cachés sur la plateforme.</p>
+                    </div>
+                    <div class="relative">
+                        <div class="step-icon w-12 h-12 rounded-xl flex items-center justify-center mb-5">
+                            <span class="material-symbols-rounded text-[24px]">link</span>
+                        </div>
+                        <p class="font-display text-xs font-bold text-ink-3 mb-1">03</p>
+                        <h3 class="font-display text-lg font-bold text-ink mb-2">Partagez le lien</h3>
+                        <p class="text-sm text-ink-2 leading-relaxed">Twitter, Discord, Reddit, par message. L'acheteur paie, télécharge, c'est terminé.</p>
+                    </div>
                 </div>
             </div>
-            <div class="text-center w-full">
-                <p id="filename-display" class="text-sm font-medium text-white truncate max-w-full"></p>
-                <p class="text-xs text-text-muted mt-1">Ready to upload</p>
-            </div>
-            <button type="button" id="remove-file" class="text-xs text-red-400 hover:text-red-300 font-medium underline mt-1 z-30">
-                Remove file
-            </button>
-        `;
-        uploadArea.appendChild(previewContainer);
+        </section>
 
-        const previewImage = previewContainer.querySelector('#preview-image');
-        const previewIcon = previewContainer.querySelector('#preview-icon');
-        const filenameDisplay = previewContainer.querySelector('#filename-display');
-        const removeButton = previewContainer.querySelector('#remove-file');
+        <!-- Garanties -->
+        <section class="py-20 px-6">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
+                <div class="card rounded-2xl p-6">
+                    <div class="w-10 h-10 rounded-lg bg-accent-l flex items-center justify-center mb-4">
+                        <span class="material-symbols-rounded text-[22px] text-accent-d">lock</span>
+                    </div>
+                    <h3 class="font-display text-base font-bold text-ink mb-1.5">Fichiers protégés</h3>
+                    <p class="text-sm text-ink-2 leading-relaxed">Stockage privé, accès uniquement après paiement confirmé. Liens à expiration.</p>
+                </div>
+                <div class="card rounded-2xl p-6">
+                    <div class="w-10 h-10 rounded-lg bg-accent-l flex items-center justify-center mb-4">
+                        <span class="material-symbols-rounded text-[22px] text-accent-d">verified</span>
+                    </div>
+                    <h3 class="font-display text-base font-bold text-ink mb-1.5">Paiements sécurisés</h3>
+                    <p class="text-sm text-ink-2 leading-relaxed">Transactions traitées par Stripe. Vos acheteurs paient en toute confiance.</p>
+                </div>
+                <div class="card rounded-2xl p-6">
+                    <div class="w-10 h-10 rounded-lg bg-accent-l flex items-center justify-center mb-4">
+                        <span class="material-symbols-rounded text-[22px] text-accent-d">bolt</span>
+                    </div>
+                    <h3 class="font-display text-base font-bold text-ink mb-1.5">Livraison instantanée</h3>
+                    <p class="text-sm text-ink-2 leading-relaxed">L'acheteur reçoit son fichier immédiatement après le paiement, sans inscription.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-line py-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p class="text-sm text-ink-3">© 2026 ComfyUI Market</p>
+            <p class="text-xs text-ink-3">Hébergé sur Netlify · Paiements par Stripe</p>
+        </div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('file_upload');
+        const uploadArea = document.querySelector('.upload-area');
+        const defaultContent = document.getElementById('upload-default');
+        const previewContent = document.getElementById('upload-preview');
+        const filenameDisplay = document.getElementById('filename-display');
+        const removeButton = document.getElementById('remove-file');
+        const form = document.getElementById('upload-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const formCard = document.getElementById('form-card');
+        const resultView = document.getElementById('result-view');
+        const shareLinkInput = document.getElementById('share-link-input');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyText = document.getElementById('copy-text');
+        const copyIcon = document.getElementById('copy-icon');
 
         function handleFile(file) {
             if (!file) return;
-
-            // Show filename (check for underscores if needed, but filenames can have them. Hiding explicit technical strings)
-            // If user meant "No underscores" in the UI texts, we are good. If they meant in the filename, we can replace.
-            // Assuming UI texts for now.
             filenameDisplay.textContent = file.name;
-
-            // Check if image
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                    previewImage.classList.remove('hidden');
-                    previewIcon.classList.add('hidden');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewImage.classList.add('hidden');
-                previewIcon.classList.remove('hidden');
-            }
-
-            // UI State toggle
             defaultContent.classList.add('hidden');
-            previewContainer.classList.remove('hidden');
-            previewContainer.classList.add('flex');
-            uploadArea.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
-            uploadArea.classList.remove('border-white/10', 'bg-slate-50/50');
+            previewContent.classList.remove('hidden');
+            previewContent.classList.add('flex');
+            uploadArea.classList.add('has-file');
+            uploadArea.classList.remove('drag-over');
         }
 
         function resetFile() {
             fileInput.value = '';
             defaultContent.classList.remove('hidden');
-            previewContainer.classList.add('hidden');
-            previewContainer.classList.remove('flex');
-            uploadArea.classList.remove('border-emerald-500/30', 'bg-emerald-500/5');
-            uploadArea.classList.add('border-white/10', 'bg-slate-50/50');
+            previewContent.classList.add('hidden');
+            previewContent.classList.remove('flex');
+            uploadArea.classList.remove('has-file', 'drag-over');
         }
 
-        fileInput.addEventListener('change', (e) => {
-            handleFile(e.target.files[0]);
-        });
-
-        removeButton.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent opening file dialog
+        fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+        removeButton.addEventListener('click', e => {
+            e.preventDefault();
             e.stopPropagation();
             resetFile();
         });
 
-        // Form Submission with AJAX
-        form.addEventListener('submit', async (e) => {
+        // Click sur la upload-zone ouvre le file input (sauf sur le bouton remove)
+        uploadArea.addEventListener('click', (e) => {
+            if (e.target.closest('#remove-file')) return;
+            fileInput.click();
+        });
+
+        // Drag & drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
+            uploadArea.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); });
+        });
+        uploadArea.addEventListener('dragenter', () => uploadArea.classList.add('drag-over'));
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+        uploadArea.addEventListener('drop', e => {
+            uploadArea.classList.remove('drag-over');
+            handleFile(e.dataTransfer.files[0]);
+        });
+
+        // Copier
+        copyBtn.addEventListener('click', () => {
+            if (!shareLinkInput.value) return;
+            navigator.clipboard.writeText(shareLinkInput.value).then(() => {
+                copyText.textContent = 'Copié';
+                copyIcon.textContent = 'check';
+                copyBtn.classList.add('text-accent-d');
+                setTimeout(() => {
+                    copyText.textContent = 'Copier';
+                    copyIcon.textContent = 'content_copy';
+                    copyBtn.classList.remove('text-accent-d');
+                }, 2000);
+            }).catch(err => console.error('Erreur copie :', err));
+        });
+
+        // Soumission
+        form.addEventListener('submit', async e => {
             e.preventDefault();
-
-            const btnContent = submitButton.innerHTML;
-            submitButton.disabled = true;
-            submitButton.innerHTML = `<span class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> Processing...`;
-
-            const formData = new FormData(form);
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span> <span>Création en cours...</span>`;
 
             try {
-                const response = await fetch('/.netlify/functions/upload', {
+                const res = await fetch('/.netlify/functions/upload', {
                     method: 'POST',
-                    body: formData
+                    body: new FormData(form)
                 });
-
-                const result = await response.json();
+                const result = await res.json();
 
                 if (result.success) {
-                    // Hide Main Content
-                    document.querySelector('.w-full.max-w-2xl.mx-auto.text-center').style.display = 'none'; // Header text
-                    form.style.display = 'none'; // Form
-
-                    // Update Link in Result View
+                    formCard.style.display = 'none';
                     shareLinkInput.value = result.link;
-
-                    // Show Result
                     resultView.classList.remove('hidden');
+                    window.scrollTo({ top: formCard.offsetTop - 100, behavior: 'smooth' });
                 } else {
-                    alert('Upload failed: ' + result.message);
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = btnContent;
+                    alert('Erreur : ' + result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHTML;
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred during upload.');
-                submitButton.disabled = false;
-                submitButton.innerHTML = btnContent;
+            } catch (err) {
+                console.error(err);
+                alert('Une erreur est survenue lors de l\'envoi.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
             }
-        });
-
-        // Drag and Drop
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        uploadArea.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFile(files[0]);
         });
     </script>
 </body>

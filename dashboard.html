@@ -5,154 +5,234 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Dashboard — ComfyUI Market</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;700&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
     <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        background: "#050505",
-                        surface: "#111111",
-                        "border-subtle": "#1e1e1e",
-                        "text-main": "#e5e5e5",
-                        "text-muted": "#737373",
+                        ink: "#0F172A",
+                        "ink-2": "#475569",
+                        "ink-3": "#94A3B8",
+                        line: "#EAECEF",
+                        "line-2": "#F1F5F9",
+                        soft: "#F8FAFC",
+                        accent: "#10B981",
+                        "accent-d": "#059669",
+                        "accent-l": "#D1FAE5",
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
                     },
                 },
             },
         };
     </script>
     <style>
-        body { background-color: #050505; }
-        .bg-grain-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.35; mix-blend-mode: overlay;
+        body { background: #F8FAFC; color: #0F172A; }
+        .material-symbols-rounded { font-variation-settings: 'opsz' 24, 'wght' 400, 'FILL' 0, 'GRAD' 0; }
+
+        .card {
+            background: #FFFFFF;
+            border: 1px solid #EAECEF;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         }
-        .card { background: #111111; border: 1px solid #1e1e1e; }
-        .btn {
-            background: #1a1a1a; border: 1px solid #2a2a2a; color: #d4d4d4;
-            transition: background 0.15s ease;
+        .card-elevated {
+            background: #FFFFFF;
+            border: 1px solid #EAECEF;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -8px rgba(15, 23, 42, 0.06);
         }
-        .btn:active { background: #222; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+
+        .btn-secondary {
+            background: #fff;
+            color: #0F172A;
+            border: 1px solid #EAECEF;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .btn-secondary:hover { background: #F8FAFC; border-color: #CBD5E1; }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: filter 0.15s, box-shadow 0.15s;
+        }
+        .btn-primary:hover { filter: brightness(1.05); }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 5px; border: 2px solid #F8FAFC; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        .period-btn {
+            color: #64748B;
+            transition: background 0.12s, color 0.12s;
+        }
+        .period-btn:hover { color: #0F172A; }
+        .period-btn.active {
+            background: #fff;
+            color: #0F172A;
+            border: 1px solid #EAECEF;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+
+        .badge-pill {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #D1FAE5;
+        }
+        .badge-pill-warn {
+            background: #FFFBEB;
+            color: #B45309;
+            border: 1px solid #FDE68A;
+        }
     </style>
 </head>
 
-<body class="bg-background text-text-main font-sans min-h-screen flex flex-col relative">
-    <div class="bg-grain bg-grain-overlay"></div>
+<body class="font-sans antialiased min-h-screen flex flex-col">
 
-    <nav class="relative z-20 w-full px-6 md:px-8 py-4 border-b border-[#1a1a1a] flex justify-between items-center bg-[#050505] sticky top-0">
-        <a href="index.html" class="flex items-center gap-3">
-            <img src="./logo.svg" alt="Logo" style="height: 28px; width: auto;" class="block">
-            <span class="font-display font-semibold text-sm text-white">ComfyUI Market</span>
-        </a>
-        <div class="flex items-center gap-2">
-            <span id="fanvue-status" class="hidden items-center gap-1.5 text-xs px-2.5 py-1.5 rounded border">
-                <span id="fanvue-dot" class="w-1.5 h-1.5 rounded-full"></span>
-                <span id="fanvue-label"></span>
-            </span>
-            <a id="fanvue-connect-btn" href="/.netlify/functions/auth-login" class="btn px-3 py-1.5 rounded text-sm flex items-center gap-1.5 hidden">
-                <span class="material-symbols-outlined text-[16px]">link</span>
-                <span>Connecter Fanvue</span>
+    <!-- Header -->
+    <header class="sticky top-0 z-30 w-full bg-white/90 backdrop-blur-md border-b border-line">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <img src="./logo.svg" alt="Logo" style="height: 26px; width: auto;" class="block">
+                <span class="font-display font-bold text-base text-ink tracking-tight">ComfyUI Market</span>
             </a>
-            <a href="index.html" class="btn px-3 py-1.5 rounded text-sm flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[16px]">add</span>
-                <span>Nouveau lien</span>
-            </a>
-        </div>
-    </nav>
-
-    <main class="relative z-10 flex-grow w-full max-w-6xl mx-auto px-6 py-8">
-        <div class="flex items-baseline justify-between mb-8">
-            <h1 class="text-lg font-display font-semibold text-white">Vue d'ensemble</h1>
-            <span class="text-xs text-text-muted font-mono" id="tx-count">0 transactions</span>
-        </div>
-
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <div class="card rounded-lg p-4">
-                <p class="text-xs text-text-muted mb-1">Ventes totales</p>
-                <p id="stat-sales" class="text-2xl font-display font-bold text-white">46</p>
-            </div>
-            <div class="card rounded-lg p-4">
-                <p class="text-xs text-text-muted mb-1">Revenus nets</p>
-                <p id="stat-revenue" class="text-2xl font-display font-bold text-white">236,09 €</p>
-            </div>
-            <div class="card rounded-lg p-4">
-                <p class="text-xs text-text-muted mb-1">Ce mois-ci</p>
-                <p id="stat-monthly" class="text-2xl font-display font-bold text-white">101,93 €</p>
+            <div class="flex items-center gap-2">
+                <span id="fanvue-status" class="hidden items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border"></span>
+                <a id="fanvue-connect-btn" href="/.netlify/functions/auth-login"
+                    class="btn-secondary px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 hidden">
+                    <span class="material-symbols-rounded text-[16px]">link</span>
+                    Connecter Fanvue
+                </a>
+                <a href="index.html" class="btn-primary px-3.5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5">
+                    <span class="material-symbols-rounded text-[16px]">add</span>
+                    Nouveau lien
+                </a>
             </div>
         </div>
+    </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-6 mb-8">
-            <div class="card rounded-lg p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-sm font-medium text-white">Revenus au fil du temps</h2>
-                    <div class="flex gap-1" id="period-selector">
-                        <button class="period-btn px-2.5 py-1 rounded text-xs text-text-muted" data-period="7">7j</button>
-                        <button class="period-btn px-2.5 py-1 rounded text-xs text-text-muted" data-period="30">30j</button>
-                        <button class="period-btn px-2.5 py-1 rounded text-xs text-text-muted" data-period="90">3 mois</button>
-                        <button class="period-btn px-2.5 py-1 rounded text-xs text-white bg-[#1e1e1e]" data-period="all">Tout</button>
+    <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Page header -->
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-8">
+            <div>
+                <p class="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-1">Analytics</p>
+                <h1 class="font-display text-2xl md:text-3xl font-extrabold text-ink">Vue d'ensemble</h1>
+            </div>
+            <span class="text-sm text-ink-2" id="tx-count">0 transactions</span>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="card rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-l flex items-center justify-center">
+                        <span class="material-symbols-rounded text-[18px] text-accent-d">shopping_bag</span>
+                    </div>
+                    <p class="text-sm font-medium text-ink-2">Ventes totales</p>
+                </div>
+                <p id="stat-sales" class="font-display text-3xl font-extrabold text-ink">46</p>
+            </div>
+            <div class="card rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-l flex items-center justify-center">
+                        <span class="material-symbols-rounded text-[18px] text-accent-d">payments</span>
+                    </div>
+                    <p class="text-sm font-medium text-ink-2">Revenus nets</p>
+                </div>
+                <p id="stat-revenue" class="font-display text-3xl font-extrabold text-ink">236,09 €</p>
+            </div>
+            <div class="card rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-l flex items-center justify-center">
+                        <span class="material-symbols-rounded text-[18px] text-accent-d">calendar_month</span>
+                    </div>
+                    <p class="text-sm font-medium text-ink-2">Ce mois-ci</p>
+                </div>
+                <p id="stat-monthly" class="font-display text-3xl font-extrabold text-ink">101,93 €</p>
+            </div>
+        </div>
+
+        <!-- Chart + side widgets -->
+        <div class="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-4 mb-6">
+
+            <!-- Revenue chart -->
+            <div class="card-elevated rounded-xl p-5">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="font-display text-base font-bold text-ink">Revenus au fil du temps</h2>
+                        <p class="text-xs text-ink-3 mt-0.5">Évolution quotidienne</p>
+                    </div>
+                    <div class="flex gap-1 p-1 bg-line-2 rounded-lg" id="period-selector">
+                        <button class="period-btn px-2.5 py-1 rounded-md text-xs font-medium" data-period="7">7j</button>
+                        <button class="period-btn px-2.5 py-1 rounded-md text-xs font-medium" data-period="30">30j</button>
+                        <button class="period-btn px-2.5 py-1 rounded-md text-xs font-medium" data-period="90">3 mois</button>
+                        <button class="period-btn active px-2.5 py-1 rounded-md text-xs font-medium" data-period="all">Tout</button>
                     </div>
                 </div>
-                <div style="height:220px;position:relative;">
+                <div style="height:240px;position:relative;">
                     <canvas id="revenue-chart"></canvas>
                 </div>
             </div>
 
-            <div class="space-y-6">
-                <div class="card rounded-lg p-5">
-                    <h2 class="text-sm font-medium text-white mb-4">Transactions recentes</h2>
+            <!-- Side widgets -->
+            <div class="flex flex-col gap-4">
+
+                <div class="card-elevated rounded-xl p-5">
+                    <h2 class="font-display text-base font-bold text-ink mb-4">Activité récente</h2>
                     <div id="transactions-list" class="space-y-3"></div>
                 </div>
 
-                <div class="card rounded-lg p-5">
-                    <h2 class="text-sm font-medium text-white mb-4">Top acheteurs</h2>
+                <div class="card-elevated rounded-xl p-5">
+                    <h2 class="font-display text-base font-bold text-ink mb-4">Top acheteurs</h2>
                     <div id="top-buyers-list" class="space-y-3"></div>
                 </div>
             </div>
         </div>
 
-        <div class="card rounded-lg overflow-hidden mb-8">
-            <div class="px-5 py-4 border-b border-[#1e1e1e]">
-                <h2 class="text-sm font-medium text-white">Revenus par acheteur</h2>
+        <!-- Revenue breakdown -->
+        <div class="card-elevated rounded-xl overflow-hidden mb-6">
+            <div class="px-5 py-4 border-b border-line">
+                <h2 class="font-display text-base font-bold text-ink">Revenus par acheteur</h2>
+                <p class="text-xs text-ink-3 mt-0.5">Tous les acheteurs, classés par montant total</p>
             </div>
-            <div id="revenue-breakdown" class="divide-y divide-[#1a1a1a]"></div>
+            <div id="revenue-breakdown" class="divide-y divide-line"></div>
         </div>
 
-        <div class="card rounded-lg overflow-hidden">
-            <div class="px-5 py-4 border-b border-[#1e1e1e]">
-                <h2 class="text-sm font-medium text-white">Historique des transactions</h2>
+        <!-- Transactions table -->
+        <div class="card-elevated rounded-xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-line">
+                <h2 class="font-display text-base font-bold text-ink">Historique des transactions</h2>
+                <p class="text-xs text-ink-3 mt-0.5">Toutes les ventes effectuées</p>
             </div>
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="border-b border-[#1e1e1e] text-xs text-text-muted uppercase tracking-wider">
-                        <th class="text-left px-4 py-3 font-medium">Fichier / Workflow</th>
-                        <th class="text-left px-4 py-3 font-medium">Type</th>
-                        <th class="text-left px-4 py-3 font-medium">Acheteur</th>
-                        <th class="text-right px-4 py-3 font-medium">Montant net</th>
-                        <th class="text-right px-4 py-3 font-medium">Date</th>
-                    </tr>
-                </thead>
-                <tbody id="tx-tbody"></tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-line bg-soft">
+                            <th class="text-left px-5 py-3 text-xs font-semibold text-ink-3 uppercase tracking-wider">Fichier</th>
+                            <th class="text-left px-5 py-3 text-xs font-semibold text-ink-3 uppercase tracking-wider">Type</th>
+                            <th class="text-left px-5 py-3 text-xs font-semibold text-ink-3 uppercase tracking-wider">Acheteur</th>
+                            <th class="text-right px-5 py-3 text-xs font-semibold text-ink-3 uppercase tracking-wider">Montant</th>
+                            <th class="text-right px-5 py-3 text-xs font-semibold text-ink-3 uppercase tracking-wider">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-tbody"></tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <footer class="relative z-10 w-full px-6 py-4 text-center text-xs text-[#444] border-t border-[#1a1a1a]">
-        ComfyUI Market
+    <footer class="border-t border-line py-6 px-6 mt-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-xs text-ink-3">© 2026 ComfyUI Market</p>
+        </div>
     </footer>
 
     <script>
@@ -221,7 +301,8 @@
             { name: "user-cx076", total: 11.19 },
         ];
 
-        const avatarColors = ["#8B5CF6", "#10B981", "#F59E0B", "#EF4444", "#3B82F6", "#EC4899", "#14B8A6", "#F97316"];
+        // Palette douce, cohérente avec le light theme
+        const avatarColors = ["#10B981", "#0EA5E9", "#8B5CF6", "#F59E0B", "#EC4899", "#14B8A6", "#6366F1", "#F97316"];
 
         function formatMoney(n) {
             return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
@@ -239,8 +320,17 @@
         }
 
         function getInitials(name) {
-            if (name.includes('_')) return name.substring(0, 2).toUpperCase();
             return name.substring(0, 2).toUpperCase();
+        }
+
+        function getTypeBadge(type) {
+            switch (type) {
+                case 'Achat fichier':  return 'bg-violet-50 text-violet-700 border border-violet-100';
+                case 'Acces workflow': return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
+                case 'Renouvellement': return 'bg-sky-50 text-sky-700 border border-sky-100';
+                case 'Pourboire':      return 'bg-amber-50 text-amber-700 border border-amber-100';
+                default:               return 'bg-slate-50 text-slate-600 border border-slate-100';
+            }
         }
 
         function renderTransactionsTable(data) {
@@ -250,49 +340,39 @@
 
             tbody.innerHTML = data.map((t, i) => {
                 const color = avatarColors[i % avatarColors.length];
-                const initials = getInitials(t.buyer);
-                return `<tr class="border-b border-[#1a1a1a] last:border-0">
-                    <td class="px-4 py-3 text-xs text-text-muted">—</td>
-                    <td class="px-4 py-3">
-                        <span class="text-xs px-2 py-0.5 rounded-full ${getTypeStyle(t.type)}">${t.type}</span>
+                return `<tr class="border-b border-line last:border-0 hover:bg-soft transition-colors">
+                    <td class="px-5 py-3 text-sm text-ink-3">—</td>
+                    <td class="px-5 py-3">
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-full ${getTypeBadge(t.type)}">${t.type}</span>
                     </td>
-                    <td class="px-4 py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
-                                 style="background:${color}">${initials}</div>
-                            <span class="text-sm text-white font-mono">${t.buyer}</span>
+                    <td class="px-5 py-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+                                 style="background:${color}">${getInitials(t.buyer)}</div>
+                            <span class="text-sm text-ink font-medium">${t.buyer}</span>
                         </div>
                     </td>
-                    <td class="text-right px-4 py-3 font-mono text-sm text-white">${formatMoney(t.amount)}</td>
-                    <td class="text-right px-4 py-3 text-xs text-text-muted">${formatDate(t.date)}</td>
+                    <td class="text-right px-5 py-3 font-display text-sm font-bold text-ink tabular-nums">${formatMoney(t.amount)}</td>
+                    <td class="text-right px-5 py-3 text-sm text-ink-2 tabular-nums">${formatDate(t.date)}</td>
                 </tr>`;
             }).join('');
-        }
-
-        function getTypeStyle(type) {
-            switch (type) {
-                case 'Achat fichier': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
-                case 'Acces workflow': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
-                case 'Renouvellement': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                case 'Pourboire': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                default: return 'bg-white/5 text-text-muted border border-white/10';
-            }
         }
 
         function renderRecentTransactions(data) {
             const container = document.getElementById('transactions-list');
             container.innerHTML = data.map((t, i) => {
                 const color = avatarColors[i % avatarColors.length];
-                const initials = getInitials(t.buyer);
-                const amountLabel = t.amount === 0 ? '<span class="text-xs text-text-muted">Gratuit</span>' : formatMoney(t.amount);
+                const amountLabel = t.amount === 0
+                    ? '<span class="text-xs font-medium text-ink-3">Gratuit</span>'
+                    : `<span class="font-display text-sm font-bold text-ink tabular-nums">${formatMoney(t.amount)}</span>`;
                 return `<div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
-                         style="background:${color}">${initials}</div>
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+                         style="background:${color}">${getInitials(t.buyer)}</div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-xs text-white font-mono truncate">${t.buyer}</p>
-                        <p class="text-[10px] text-text-muted">${daysAgoText(t.daysAgo)}</p>
+                        <p class="text-sm text-ink font-medium truncate">${t.buyer}</p>
+                        <p class="text-xs text-ink-3">${daysAgoText(t.daysAgo)}</p>
                     </div>
-                    <div class="text-right flex-shrink-0">${amountLabel}</div>
+                    <div class="flex-shrink-0">${amountLabel}</div>
                 </div>`;
             }).join('');
         }
@@ -301,14 +381,13 @@
             const container = document.getElementById('top-buyers-list');
             container.innerHTML = data.map((b, i) => {
                 const color = avatarColors[i % avatarColors.length];
-                const initials = getInitials(b.name);
                 return `<div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
-                         style="background:${color}">${initials}</div>
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+                         style="background:${color}">${getInitials(b.name)}</div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs text-white font-mono truncate">${b.name}</p>
+                        <p class="text-sm text-ink font-medium truncate">${b.name}</p>
                     </div>
-                    <p class="text-xs font-mono text-white">${formatMoney(b.total)}</p>
+                    <p class="font-display text-sm font-bold text-ink tabular-nums">${formatMoney(b.total)}</p>
                 </div>`;
             }).join('');
         }
@@ -326,21 +405,20 @@
             container.innerHTML = sorted.map(([buyer, total], i) => {
                 const pct = (total / maxRevenue) * 100;
                 const color = avatarColors[i % avatarColors.length];
-                return `<div class="px-5 py-3 flex items-center gap-4">
-                    <div class="w-36 min-w-0 flex-shrink-0 flex items-center gap-2">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
+                return `<div class="px-5 py-3 flex items-center gap-4 hover:bg-soft transition-colors">
+                    <div class="w-40 min-w-0 flex-shrink-0 flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
                              style="background:${color}">${getInitials(buyer)}</div>
-                        <p class="text-xs text-white font-mono truncate">${buyer}</p>
+                        <p class="text-sm text-ink font-medium truncate">${buyer}</p>
                     </div>
-                    <div class="flex-1 h-1.5 bg-[#1a1a1a] rounded-full overflow-hidden">
-                        <div class="h-full rounded-full" style="width:${pct}%;background:${color}"></div>
+                    <div class="flex-1 h-1.5 bg-line-2 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all" style="width:${pct}%;background:${color}"></div>
                     </div>
-                    <p class="text-xs font-mono text-white w-16 text-right flex-shrink-0">${formatMoney(total)}</p>
+                    <p class="font-display text-sm font-bold text-ink w-20 text-right flex-shrink-0 tabular-nums">${formatMoney(total)}</p>
                 </div>`;
             }).join('');
         }
 
-// Override renderRevenueChart to support dynamic date range
         function renderRevenueChartDynamic(data, period) {
             const ctx = document.getElementById('revenue-chart').getContext('2d');
             const dailyRevenue = {};
@@ -350,7 +428,7 @@
             });
 
             const now = new Date();
-            let startDate, endDate = new Date(now);
+            let startDate;
 
             if (period === 'all') {
                 const dates = data.map(t => t.date).filter(Boolean).sort();
@@ -361,7 +439,7 @@
             }
 
             const allDates = [];
-            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+            for (let d = new Date(startDate); d <= now; d.setDate(d.getDate() + 1)) {
                 allDates.push(d.toISOString().split('T')[0]);
             }
 
@@ -370,20 +448,30 @@
 
             if (window.revenueChartInstance) window.revenueChartInstance.destroy();
 
+            // Gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, 240);
+            gradient.addColorStop(0, 'rgba(16, 185, 129, 0.18)');
+            gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+
             window.revenueChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels,
                     datasets: [{
                         data: values,
-                        borderColor: '#8B5CF6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.08)',
-                        borderWidth: 1.5,
+                        borderColor: '#10B981',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0,
+                        tension: 0.3,
                         pointRadius: values.map(v => v > 0 ? 3 : 0),
-                        pointBackgroundColor: '#8B5CF6',
-                        pointHoverRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#10B981',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: '#10B981',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2,
                     }]
                 },
                 options: {
@@ -392,23 +480,34 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: '#1a1a1a',
-                            titleColor: '#e5e5e5',
-                            bodyColor: '#737373',
-                            borderColor: '#2a2a2a',
-                            borderWidth: 1,
-                            padding: 10,
-                            cornerRadius: 6,
+                            backgroundColor: '#0F172A',
+                            titleColor: '#fff',
+                            bodyColor: '#CBD5E1',
+                            borderWidth: 0,
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            titleFont: { family: 'Inter', size: 11, weight: '500' },
+                            bodyFont: { family: 'Inter', size: 13, weight: '600' },
                             callbacks: { label: ctx => ctx.parsed.y > 0 ? formatMoney(ctx.parsed.y) : null },
                             filter: item => item.raw > 0
                         }
                     },
                     scales: {
-                        x: { grid: { color: '#1a1a1a' }, ticks: { color: '#555', font: { size: 10 }, maxTicksLimit: 10 } },
+                        x: {
+                            grid: { display: false },
+                            border: { display: false },
+                            ticks: { color: '#94A3B8', font: { family: 'Inter', size: 11 }, maxTicksLimit: 8 }
+                        },
                         y: {
                             beginAtZero: true,
-                            grid: { color: '#1a1a1a' },
-                            ticks: { color: '#555', font: { size: 10 }, callback: v => v > 0 ? v.toFixed(0) + ' €' : '0' }
+                            grid: { color: '#F1F5F9' },
+                            border: { display: false },
+                            ticks: {
+                                color: '#94A3B8',
+                                font: { family: 'Inter', size: 11 },
+                                callback: v => v > 0 ? v.toFixed(0) + ' €' : '0'
+                            }
                         }
                     }
                 }
@@ -417,20 +516,14 @@
 
         function setStatus(live) {
             const el = document.getElementById('fanvue-status');
-            const dot = document.getElementById('fanvue-dot');
-            const label = document.getElementById('fanvue-label');
             el.classList.remove('hidden');
-            el.classList.add('flex');
+            el.classList.add('inline-flex');
             if (live) {
-                el.style.cssText = 'border-color:#1a3a1a;background:#0a1f0a';
-                dot.style.background = '#22c55e';
-                label.textContent = 'Live';
-                label.style.color = '#4ade80';
+                el.className = 'badge-pill px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5';
+                el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Live';
             } else {
-                el.style.cssText = 'border-color:#2a2a1a;background:#1a1a0a';
-                dot.style.background = '#eab308';
-                label.textContent = 'Démo';
-                label.style.color = '#facc15';
+                el.className = 'badge-pill-warn px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5';
+                el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Démo';
                 document.getElementById('fanvue-connect-btn').classList.remove('hidden');
             }
         }
@@ -453,7 +546,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Render hardcoded demo data immediately
             let activeTx = transactions;
             let activeRecent = recentTx;
             let activeBuyers = topBuyers;
@@ -461,22 +553,15 @@
 
             renderAll(activeTx, activeRecent, activeBuyers, currentPeriod);
 
-            // Period selector wiring
-            function wirePeriodBtns() {
-                document.querySelectorAll('.period-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.period-btn').forEach(b => {
-                            b.className = 'period-btn px-2.5 py-1 rounded text-xs text-text-muted';
-                        });
-                        btn.className = 'period-btn px-2.5 py-1 rounded text-xs text-white bg-[#1e1e1e]';
-                        currentPeriod = btn.dataset.period;
-                        renderRevenueChartDynamic(activeTx, currentPeriod);
-                    });
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentPeriod = btn.dataset.period;
+                    renderRevenueChartDynamic(activeTx, currentPeriod);
                 });
-            }
-            wirePeriodBtns();
+            });
 
-            // Try to load live Fanvue data
             try {
                 const res = await fetch('/.netlify/functions/get-fanvue-data');
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -492,7 +577,7 @@
                     setStatus(false);
                 }
             } catch (e) {
-                console.warn('Fanvue data unavailable, using demo data.', e);
+                console.warn('Données Fanvue indisponibles, données démo utilisées.', e);
                 setStatus(false);
             }
         });
